@@ -15,25 +15,31 @@ function buildMetadata(sample) {
 
     // BONUS: Build the Gauge Chart
     // buildGauge(data.WFREQ);
-  var url = "/metadata/${sample}";
-  d3.json(url).then(function(sample) {
+  
+    var url = "/metadata/${sample}";
+    d3.json(url).then((x) => {
     
-    var sample_metadata = d3.select("#sample-metadata");
+      var sample_metadata = d3.select("#sample-metadata");
 
-    sample_metadata.html("");
+      sample_metadata.html("");
 
-    Object.entries(sample).forEach(([key, value]) => {
-      sample_metadata.append("h6").text(`${key}: ${value}`);
-  });
+      Object.entries(x).forEach(([key, value]) => {
+        sample_metadata.append("h6").text(`${key}: ${value}`);
+      });
 
-  })
+    })
 
 }
 
 function buildCharts(sample) {
 
   // @TODO: Use `d3.json` to fetch the sample data for the plots
-
+    var chart_url = "/samples/${sample}";
+    d3.json(chart_url)then((data)) => {
+      var otu_ids = data.otu_ids;
+      var sample_values = data.sample_values;
+      var otu_lables = data.otu_lables
+    }
     // @TODO: Build a Bubble Chart using the sample data
 
     // @TODO: Build a Pie Chart
@@ -73,14 +79,14 @@ function init() {
 
     // Use the first sample from the list to build the initial plots
     const firstSample = sampleNames[0];
-    buildCharts(firstSample);
+    // buildCharts(firstSample);
     buildMetadata(firstSample);
   });
 }
 
 function optionChanged(newSample) {
   // Fetch new data each time a new sample is selected
-  buildCharts(newSample);
+  // buildCharts(newSample);
   buildMetadata(newSample);
 }
 
