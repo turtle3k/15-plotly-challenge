@@ -3,65 +3,85 @@ function buildMetadata(sample) {
   // @TODO: Complete the following function that builds the metadata panel
 
   // Use `d3.json` to fetch the metadata for a sample
-    // (See 15,2,5)
-    // Use d3 to select the panel with id of `#sample-metadata`
+  // (See 15,2,5)  ** NOTE to self, backticks ` NOT single quote' **
+  // Use d3 to select the panel with id of `#sample-metadata`
 
-    // Use `.html("") to clear any existing metadata
+  // Use `.html("") to clear any existing metadata
 
-    // Use `Object.entries` to add each key and value pair to the panel
-    // Hint: Inside the loop, you will need to use d3 to append new
-    // tags for each key-value in the metadata.
-    // (see 14,3,5 bonus?)
+  // Use `Object.entries` to add each key and value pair to the panel
+  // Hint: Inside the loop, you will need to use d3 to append new
+  // tags for each key-value in the metadata.
+  // (see 14,3,5 bonus?)
 
-    // BONUS: Build the Gauge Chart
-    // buildGauge(data.WFREQ);
-  
-    var url = "/metadata/${sample}";
-    d3.json(url).then((x) => {
-    
-      var sample_metadata = d3.select("#sample-metadata");
+  // BONUS: Build the Gauge Chart
+  // buildGauge(data.WFREQ);
+  // d3.json(`/metadata/${sample}`).then((data) => {
 
-      sample_metadata.html("");
+  var url = `/metadata/${sample}`;
+  d3.json(url).then((x) => {
 
-      Object.entries(x).forEach(([key, value]) => {
-        sample_metadata.append("h6").text(`${key}: ${value}`);
-      });
+    var sample_metadata = d3.select("#sample-metadata");
 
-    })
+    sample_metadata.html("");
+
+    Object.entries(x).forEach(([key, value]) => {
+      sample_metadata.append("h6").text(`${key}: ${value}`);
+    });
+
+  })
 
 }
 
 function buildCharts(sample) {
 
   // @TODO: Use `d3.json` to fetch the sample data for the plots
-    var chart_url = "/samples/${sample}";
-    d3.json(chart_url)then((data)) => {
-      var otu_ids = data.otu_ids;
-      var sample_values = data.sample_values;
-      var otu_lables = data.otu_lables
-    }
+  var chart_url = `/samples/${sample}`;
+  d3.json(chart_url).then((d) => {
+    var otu_ids = d.otu_ids;
+    var sample_values = d.sample_values;
+    var otu_labels = d.otu_labels;
+
     // @TODO: Build a Bubble Chart using the sample data
+    var trace1 = {
+      x: otu_ids,
+      y: sample_values,
+      text: otu_labels,
+      mode: "markers",
+      marker: {
+        size: sample_values,
+        color: otu_ids
+      }
+    }
+    var data = [trace1];
 
-    // @TODO: Build a Pie Chart
-    // HINT: You will need to use slice() to grab the top 10 sample_values,
-    // otu_ids, and labels (10 each).
+    var layout = {
+      showlegend: false,
+      xaxis: {title: "OTU ID"},
+    }
 
-  var trace1 = {
-    labels: ["otu_ids"],
-    values: ["sample_values"],
-    type: 'pie'
-  };
+    Plotly.newPlot("bubble", data, layout);
 
-  var data = [trace1];
+      // @TODO: Build a Pie Chart
+      // HINT: You will need to use slice() to grab the top 10 sample_values,
+      // otu_ids, and labels (10 each).
 
-  // var layout = {
-  //   title: "'Bar' Chart",
-  // };
+    var trace2 = {
+      labels: otu_ids.slice(0, 10),
+      values: sample_values.slice(0, 10),
+      hovertext: otu_labels.slice(0, 10),
+      type: "pie"
+    };
 
-  // Plotly.newPlot("plot", data, layout);
+    var pie_data = [trace2];
 
-  Plotly.newPlot("pie", data);
+    var pie_layout = {
+      height: 475,
+      width: 475
+    };
 
+    Plotly.newPlot("pie", pie_data, pie_layout);
+
+  });
 }
 
 function init() {
@@ -79,14 +99,14 @@ function init() {
 
     // Use the first sample from the list to build the initial plots
     const firstSample = sampleNames[0];
-    // buildCharts(firstSample);
+    buildCharts(firstSample);
     buildMetadata(firstSample);
   });
 }
 
 function optionChanged(newSample) {
   // Fetch new data each time a new sample is selected
-  // buildCharts(newSample);
+  buildCharts(newSample);
   buildMetadata(newSample);
 }
 
