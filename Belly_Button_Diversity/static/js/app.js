@@ -15,6 +15,7 @@ function buildMetadata(sample) {
 
   // BONUS: Build the Gauge Chart
   // buildGauge(data.WFREQ);
+  
   // d3.json(`/metadata/${sample}`).then((data) => {
 
   var url = `/metadata/${sample}`;
