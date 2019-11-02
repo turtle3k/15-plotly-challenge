@@ -13,9 +13,8 @@ function buildMetadata(sample) {
   // tags for each key-value in the metadata.
   // (see 14,3,5 bonus?)
 
-  // BONUS: Build the Gauge Chart
-  // buildGauge(data.WFREQ);
   
+
   // d3.json(`/metadata/${sample}`).then((data) => {
 
   var url = `/metadata/${sample}`;
@@ -28,6 +27,10 @@ function buildMetadata(sample) {
     Object.entries(x).forEach(([key, value]) => {
       sample_metadata.append("h6").text(`${key}: ${value}`);
     });
+
+    // BONUS: Build the Gauge Chart
+    // buildGauge(data.WFREQ);
+    buildGauge(x.WFREQ);
 
   })
 
